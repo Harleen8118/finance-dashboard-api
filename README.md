@@ -157,17 +157,17 @@ curl "http://localhost:3000/audit-logs?page=1&limit=20" \
 
 ## Assumptions
 
-1. **Registration is public** — any visitor can register. New users default to `VIEWER` role. In production, you would likely restrict role assignment or require email verification.
-2. **JWT secret is static** — configured via `JWT_SECRET` env var. In production, use a strong random secret and rotate periodically.
-3. **Soft deletion** — records and users are never physically deleted. `isDeleted` and `isActive` flags are used respectively to preserve audit trail integrity.
-4. **Single-tenant** — all users see all financial records. Multi-tenant isolation would require a `tenantId` field.
-5. **No refresh tokens** — the API issues a single JWT with configurable expiry. A refresh token mechanism would be added for production.
+1. **Registration is public** - any visitor can register. New users default to `VIEWER` role. In production, you would likely restrict role assignment or require email verification.
+2. **JWT secret is static** - configured via `JWT_SECRET` env var. In production, use a strong random secret and rotate periodically.
+3. **Soft deletion** - records and users are never physically deleted. `isDeleted` and `isActive` flags are used respectively to preserve audit trail integrity.
+4. **Single-tenant** - all users see all financial records. Multi-tenant isolation would require a `tenantId` field.
+5. **No refresh tokens** - the API issues a single JWT with configurable expiry. A refresh token mechanism would be added for production.
 
 ## Architecture Decisions
 
 ### Why Decimal, not Float, for amounts
 
-Floating-point arithmetic in IEEE 754 (what JavaScript's `number` type and PostgreSQL's `float` use) introduces rounding errors that are unacceptable in financial applications. For example, `0.1 + 0.2 !== 0.3` in JavaScript. Prisma's `Decimal` maps to PostgreSQL's `NUMERIC(12,2)`, which stores exact decimal values with fixed precision — critical for accounting correctness.
+Floating-point arithmetic in IEEE 754 (what JavaScript's `number` type and PostgreSQL's `float` use) introduces rounding errors that are unacceptable in financial applications. For example, `0.1 + 0.2 !== 0.3` in JavaScript. Prisma's `Decimal` maps to PostgreSQL's `NUMERIC(12,2)`, which stores exact decimal values with fixed precision, critical for accounting correctness.
 
 ### Why soft delete
 
@@ -184,20 +184,3 @@ The `/dashboard/stream` endpoint uses Server-Sent Events (SSE), a lightweight, H
 ### Rate limiting
 
 A custom `ThrottlerGuard` applies different rate limits per role: `VIEWER` users are limited to 30 requests per 60 seconds, while `ANALYST` and `ADMIN` users get 100 requests per 60 seconds. This prevents abuse from lower-privilege accounts while giving power users adequate throughput.
-
-## What Would Be Added With More Time
-
-- **Refresh tokens** — separate short-lived access tokens and long-lived refresh tokens for better security
-- **Email verification** — verify email on registration before activating the account
-- **Password reset** — forgot password flow with email-based reset tokens
-- **Multi-tenancy** — organization/tenant isolation for SaaS deployment
-- **Caching** — Redis caching layer for dashboard aggregations with cache invalidation on mutations
-- **Pagination cursor** — cursor-based pagination instead of offset for better performance on large datasets
-- **Export** — CSV/PDF export of financial records and dashboard reports
-- **Webhooks** — configurable webhook notifications for financial events
-- **CI/CD pipeline** — GitHub Actions for automated testing, linting, and deployment
-- **Dockerized app** — multi-stage Dockerfile for the NestJS application itself
-- **Health check** — `/health` endpoint with database connectivity check
-- **Internationalization** — multi-currency support and locale-aware formatting
-- **Input sanitization** — additional XSS and SQL injection protection layers
-- **Comprehensive E2E tests** — full integration test coverage for all endpoints and edge cases
