@@ -21,8 +21,8 @@ async function bootstrap() {
 
   // Swagger setup
   const config = new DocumentBuilder()
-    .setTitle('Finance Dashboard API')
-    .setDescription('A comprehensive financial dashboard REST API with role-based access control, real-time updates, and audit logging.')
+    .setTitle('Finance App Backend')
+    .setDescription('API endpoints for the finance dashboard. Supports JWT auth, role permissions, and transaction tracking.')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

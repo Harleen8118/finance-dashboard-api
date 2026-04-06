@@ -1,6 +1,6 @@
-# Finance Dashboard API
+# Finance App Backend
 
-A comprehensive, production-ready REST API for managing financial records with real-time dashboard analytics, role-based access control, and full audit logging. Built with NestJS, Prisma, and PostgreSQL.
+Backend service for managing financial records, tracking analytics, and handling user roles. Built with NestJS, Prisma, and PostgreSQL.
 
 ## Stack
 
